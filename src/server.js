@@ -11,7 +11,7 @@ import { ApolloServer } from 'apollo-server-express'
 import { connectDB } from './config/mongoose.js'
 
 import typeDefs from './typeDefs/typeDefs.js'
-import resolvers from './resolvers/posts.js'
+import resolvers from './resolvers/users.js'
 
 /**
  * The main function of the application.
