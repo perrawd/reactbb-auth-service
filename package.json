@@ -1,0 +1,47 @@
+{
+  "name": "reactbb-auth-service",
+  "version": "1.0.0",
+  "description": "Authentification micro-service for reactBB",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "NODE_ENV=production node src/server.js",
+    "start:dev": "NODE_ENV=developement nodemon --inspect -r dotenv/config src/server.js",
+    "lint": "npx eslint ./src || exit 0",
+    "lint:fix": "npx eslint ./src --fix || exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.lnu.se:1dv613/student/pr222iw/projects/reactbb-resource-service.git"
+  },
+  "keywords": [],
+  "contributors": [
+    "Per Rawdin <per.rawdin@student.lnu.se>"
+  ],
+  "license": "MIT",
+  "eslintConfig": {
+    "extends": "@lnu"
+  },
+  "nodemonConfig": {
+    "ext": "js,json,hbs,html,css"
+  },
+  "devDependencies": {
+    "@lnu/eslint-config": "^1.1.2",
+    "dotenv": "^8.2.0",
+    "eslint": "^7.23.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsdoc": "^32.3.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.3.1",
+    "eslint-plugin-standard": "^5.0.0",
+    "nodemon": "^2.0.7"
+  },
+  "dependencies": {
+    "apollo-server-express": "^2.22.2",
+    "bcrypt": "^5.0.1",
+    "express": "^4.17.1",
+    "graphql": "^15.5.0",
+    "helmet": "^4.4.1",
+    "mongoose": "^5.12.2"
+  }
+}
