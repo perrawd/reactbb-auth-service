@@ -5,7 +5,7 @@
  * @version 1.0.0
  */
 
-import bcrypt from 'bcrypt'
+// import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { User } from '../models/user.js'
 
@@ -30,13 +30,10 @@ const resolvers = {
         registerInput: { username, email, password, confirmPassword }
       }
     ) {
-      password = await bcrypt.hash(password, 12)
-
       const newUser = new User({
         email,
         username,
-        password,
-        createdAt: new Date().toISOString()
+        password
       })
 
       const res = await newUser.save()
