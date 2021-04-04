@@ -10,7 +10,6 @@ import jwt from 'jsonwebtoken'
 import { User } from '../models/user.js'
 import fs from 'fs'
 import redis from 'redis'
-import { promisify } from 'util'
 
 // Provide resolver functions for your schema fields
 const resolvers = {
@@ -41,14 +40,14 @@ const resolvers = {
 
       console.log(res.id)
 
-      const token = jwt.sign({
-        id: res.id
-      }, process.env.SECRET, { expiresIn: '1h' })
+      const { accessToken, refreshToken } = _signTokenPairs(res)
+      // console.log(token)
 
       return {
         ...res._doc,
         id: res._id,
-        token
+        accessToken,
+        refreshToken
       }
     }
     // TODO: Validate user data
@@ -90,8 +89,8 @@ const _signTokenPairs = (user) => {
     redisClient.quit()
 
     return {
-      access_token: accessToken,
-      refresh_token: refreshToken
+      accessToken: accessToken,
+      refreshToken: refreshToken
     }
   } catch (error) {
     throw new Error('Token signing error')

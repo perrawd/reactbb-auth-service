@@ -26,7 +26,8 @@ const typeDefs = gql`
      type User {
          id: ID!
          email: String!
-         token: String!
+         accessToken: String!
+         refreshToken: String!
          username: String!
          createdAt: String!
      }
