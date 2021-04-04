@@ -6,9 +6,10 @@
  */
 
 import express from 'express'
+import { connectDB } from './config/mongoose.js'
 import helmet from 'helmet'
 import { ApolloServer } from 'apollo-server-express'
-import { connectDB } from './config/mongoose.js'
+import depthLimit from 'graphql-depth-limit'
 
 import typeDefs from './typeDefs/typeDefs.js'
 import resolvers from './resolvers/users.js'
@@ -21,13 +22,24 @@ import resolvers from './resolvers/users.js'
 const main = async () => {
   await connectDB()
   // Start GraphQL Apollo server
-  const server = new ApolloServer({ typeDefs, resolvers, playground: true, introspection: true })
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    playground: true,
+    introspection: true,
+    validationRules: [depthLimit(7)]
+  })
   await server.start()
 
   // Start Express server
   // Set various HTTP headers to make the application little more secure (https://www.npmjs.com/package/helmet).
   const app = express()
-  app.use(helmet({ contentSecurityPolicy: (process.env.NODE_ENV === 'production') ? undefined : false }))
+  app.use(helmet({
+    contentSecurityPolicy:
+    (process.env.NODE_ENV === 'production')
+      ? undefined
+      : false
+  }))
 
   server.applyMiddleware({ app })
 
