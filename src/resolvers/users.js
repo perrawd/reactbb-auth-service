@@ -16,12 +16,12 @@ const resolvers = {
      * The main function of the application.
      *
      * @param {object} _ Previous
-     * @param {object} registerInput Previous
-     * @param {object} registerInput.registerInput Previous
-     * @param {object} registerInput.registerInput.username The username
-     * @param {object} registerInput.registerInput.email The e-mail address
-     * @param {object} registerInput.registerInput.password The password
-     * @param {object} registerInput.registerInput.confirmPassword Confirm password
+     * @param {object} args Arguments
+     * @param {object} args.registerInput registerInput schema
+     * @param {object} args.registerInput.username The username
+     * @param {object} args.registerInput.email The e-mail address
+     * @param {object} args.registerInput.password The password
+     * @param {object} args.registerInput.confirmPassword Confirm password
      * @returns {object} return
      */
     async register (
@@ -30,13 +30,13 @@ const resolvers = {
         registerInput: { username, email, password, confirmPassword }
       }
     ) {
-      const newUser = new User({
+      const res = await User.insert({
         email,
         username,
         password
       })
 
-      const res = await newUser.save()
+      console.log(res.id)
 
       const token = jwt.sign({
         id: res.id

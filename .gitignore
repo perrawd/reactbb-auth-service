@@ -189,6 +189,7 @@ $RECYCLE.BIN/
 *.lnk
 
 # Secret
+secret/
 *.pem
 *.key
 
