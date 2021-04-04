@@ -19,6 +19,39 @@ const resolvers = {
      *
      * @param {object} _ Previous
      * @param {object} args Arguments
+     * @param {object} args.username The username
+     * @param {object} args.password The password.
+     * @returns {object} return
+     */
+    async login (_, { username, password }) {
+      try {
+        // Authenticate the user.
+        const user = await User.authenticate(username, password)
+
+        // Create the access and refresh token.
+        const { accessToken, refreshToken } = _signTokenPairs(user)
+
+        console.log(user)
+        console.log(accessToken)
+
+        return {
+          id: user._id,
+          email: user.email,
+          accessToken,
+          refreshToken,
+          username: user.email
+        }
+      } catch (error) {
+        // Authentication failed.
+        throw new Error(error)
+      }
+    },
+
+    /**
+     * The main function of the application.
+     *
+     * @param {object} _ Previous
+     * @param {object} args Arguments
      * @param {object} args.registerInput registerInput schema
      * @param {object} args.registerInput.username The username
      * @param {object} args.registerInput.email The e-mail address
