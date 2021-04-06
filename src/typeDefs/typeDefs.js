@@ -9,7 +9,7 @@ import { gql } from 'apollo-server-express'
 
 // Construct a schema, using GraphQL schema language
 const typeDefs = gql`
-    type Query {
+    extend type Query {
         getUsers: [User]
     }
      type Mutation {
@@ -24,7 +24,7 @@ const typeDefs = gql`
          email: String!
      }
 
-     type User {
+     type User @key(fields: "id") {
          id: ID!
          email: String!
          accessToken: String!
