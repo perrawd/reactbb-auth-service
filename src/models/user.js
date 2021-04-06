@@ -61,12 +61,12 @@ schema.pre('save', async function () {
 /**
  * Authenticates a user.
  *
- * @param {string} email - ...
+ * @param {string} username - ...
  * @param {string} password - ...
  * @returns {Promise<User>} ...
  */
-schema.statics.authenticate = async function (email, password) {
-  const user = await this.findOne({ email })
+schema.statics.authenticate = async function (username, password) {
+  const user = await this.findOne({ username })
 
   // If no user found or password is wrong, throw an error.
   if (!user || !(await bcrypt.compare(password, user.password))) {
