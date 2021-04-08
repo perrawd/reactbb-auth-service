@@ -10,7 +10,7 @@ import jwt from 'jsonwebtoken'
 import { User } from '../models/user.js'
 import fs from 'fs'
 import redis from 'redis'
-import { AuthenticationError } from 'apollo-server-express'
+import { AuthenticationError, UserInputError } from 'apollo-server-express'
 
 // Provide resolver functions for your schema fields
 const resolvers = {
@@ -67,22 +67,28 @@ const resolvers = {
         registerInput: { username, email, password, confirmPassword }
       }
     ) {
-      const res = await User.insert({
-        email,
-        username,
-        password
-      })
+      try {
+        const res = await User.insert({
+          email,
+          username,
+          password
+        })
 
-      console.log(res.id)
+        console.log(res.id)
 
-      const { accessToken, refreshToken } = _signTokenPairs(res)
-      // console.log(token)
+        const { accessToken, refreshToken } = _signTokenPairs(res)
+        // console.log(token)
 
-      return {
-        ...res._doc,
-        id: res._id,
-        accessToken,
-        refreshToken
+        return {
+          ...res._doc,
+          id: res._id,
+          accessToken,
+          refreshToken
+        }
+      } catch (error) {
+        if (error._message === 'User validation failed') {
+          throw new UserInputError(error)
+        }
       }
     }
     // TODO: Validate user data
