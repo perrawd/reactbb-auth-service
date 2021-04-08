@@ -10,6 +10,7 @@ import jwt from 'jsonwebtoken'
 import { User } from '../models/user.js'
 import fs from 'fs'
 import redis from 'redis'
+import { AuthenticationError } from 'apollo-server-express'
 
 // Provide resolver functions for your schema fields
 const resolvers = {
@@ -43,7 +44,8 @@ const resolvers = {
         }
       } catch (error) {
         // Authentication failed.
-        throw new Error(error)
+        console.error(error)
+        throw new AuthenticationError(error)
       }
     },
 
