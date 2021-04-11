@@ -20,7 +20,7 @@ import resolvers from './resolvers/users.js'
  *
  * @returns {object} The server app.
  */
-const main = async () => {
+export const main = async () => {
   await connectDB()
   // Start GraphQL Apollo server
   const server = new ApolloServer({
