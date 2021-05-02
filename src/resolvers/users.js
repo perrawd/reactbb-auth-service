@@ -87,13 +87,14 @@ const resolvers = {
         }
       } catch (error) {
         if (error._message === 'User validation failed') {
-          throw new UserInputError(error)
+          const validationMessages = []
+          for (const err in error.errors) {
+            validationMessages.push(error.errors[err].message)
+          }
+          throw new UserInputError(error, { validationMessages })
         }
       }
     }
-    // TODO: Validate user data
-    // TODO: Make sure user doesnt already exist
-    // TODO: Hash password and create access token
   }
 }
 
