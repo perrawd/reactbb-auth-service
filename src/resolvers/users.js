@@ -69,7 +69,7 @@ const resolvers = {
     ) {
       try {
         if (password !== confirmPassword) {
-          throw new UserInputError('Password mismatch', { message: 'Password must match' })
+          throw new UserInputError('Password must match')
         }
 
         const res = await User.insert({
@@ -92,14 +92,20 @@ const resolvers = {
       } catch (error) {
         const validationMessages = []
 
-        if (error.extensions.code === 'BAD_USER_INPUT') {
-          validationMessages.push(error.extensions.message)
-        }
-        if (error._message === 'User validation failed') {
+        if (error.name === 'ValidationError') {
           for (const err in error.errors) {
             validationMessages.push(error.errors[err].message)
           }
+        } else {
+          if (error.code === 11000) {
+            for (const key in error.keyValue) {
+              validationMessages.push(`The ${key} '${error.keyValue[key]}' already exists.`)
+            }
+          } else {
+            validationMessages.push(error.message)
+          }
         }
+
         throw new UserInputError(error, { validationMessages })
       }
     }
