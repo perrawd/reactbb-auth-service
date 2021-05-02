@@ -68,6 +68,10 @@ const resolvers = {
       }
     ) {
       try {
+        if (password !== confirmPassword) {
+          throw new UserInputError('Password mismatch', { message: 'Password must match' })
+        }
+
         const res = await User.insert({
           email,
           username,
@@ -86,13 +90,17 @@ const resolvers = {
           refreshToken
         }
       } catch (error) {
+        const validationMessages = []
+
+        if (error.extensions.code === 'BAD_USER_INPUT') {
+          validationMessages.push(error.extensions.message)
+        }
         if (error._message === 'User validation failed') {
-          const validationMessages = []
           for (const err in error.errors) {
             validationMessages.push(error.errors[err].message)
           }
-          throw new UserInputError(error, { validationMessages })
         }
+        throw new UserInputError(error, { validationMessages })
       }
     }
   }
