@@ -33,6 +33,11 @@ const schema = new mongoose.Schema({
     type: String,
     minlength: [10, 'The password must be of minimum length 10 characters.'],
     required: [true, 'User password required.']
+  },
+  role: {
+    type: String,
+    default: 'USER',
+    enum: ['USER', 'MODERATOR', 'SUPERUSER']
   }
 }, {
   timestamps: true,
