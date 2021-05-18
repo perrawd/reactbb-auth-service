@@ -123,7 +123,7 @@ const _signTokenPairs = (user) => {
     const privateKey = fs.readFileSync(process.env.KEY_PATH, 'utf8')
 
     // Create the access token with the shorter lifespan.
-    const accessToken = jwt.sign({ sub: user.id }, privateKey, {
+    const accessToken = jwt.sign({ sub: { id: user.id, username: user.username } }, privateKey, {
       algorithm: 'RS256',
       expiresIn: process.env.ACCESS_TOKEN_LIFE
     })
