@@ -14,6 +14,22 @@ import { AuthenticationError, UserInputError } from 'apollo-server-express'
 
 // Provide resolver functions for your schema fields
 const resolvers = {
+  Query: {
+    /**
+     * Get all users.
+     *
+     * @returns {object} The server app.
+     */
+    async getUsers () {
+      try {
+        const users = User.find()
+        console.log(users)
+        return users
+      } catch (err) {
+        throw new Error(err)
+      }
+    }
+  },
   Mutation: {
     /**
      * The main function of the application.
@@ -37,10 +53,11 @@ const resolvers = {
 
         return {
           id: user._id,
+          username: user.email,
           email: user.email,
+          role: user.role,
           accessToken,
-          refreshToken,
-          username: user.email
+          refreshToken
         }
       } catch (error) {
         // Authentication failed.
@@ -78,7 +95,7 @@ const resolvers = {
           password
         })
 
-        console.log(res.id)
+        console.log(res._doc)
 
         const { accessToken, refreshToken } = _signTokenPairs(res)
         // console.log(token)
@@ -123,7 +140,15 @@ const _signTokenPairs = (user) => {
     const privateKey = fs.readFileSync(process.env.KEY_PATH, 'utf8')
 
     // Create the access token with the shorter lifespan.
-    const accessToken = jwt.sign({ sub: { id: user.id, username: user.username } }, privateKey, {
+    const accessToken = jwt.sign({
+      sub: {
+        id: user.id,
+        username: user.username,
+        role: user.role
+      }
+    },
+    privateKey,
+    {
       algorithm: 'RS256',
       expiresIn: process.env.ACCESS_TOKEN_LIFE
     })

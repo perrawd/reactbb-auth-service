@@ -31,6 +31,7 @@ const typeDefs = gql`
          refreshToken: String!
          username: String!
          createdAt: String!
+         role: String!
      }
  `
 export default typeDefs
