@@ -5,14 +5,12 @@
  * @version 1.0.0
  */
 
-// import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { User } from '../models/user.js'
 import fs from 'fs'
 import redis from 'redis'
 import { AuthenticationError, UserInputError } from 'apollo-server-express'
 
-// Provide resolver functions for your schema fields
 const resolvers = {
   Query: {
     /**
@@ -23,7 +21,7 @@ const resolvers = {
     async getUsers () {
       try {
         const users = User.find()
-        console.log(users)
+
         return users
       } catch (err) {
         throw new Error(err)
@@ -32,13 +30,13 @@ const resolvers = {
   },
   Mutation: {
     /**
-     * The main function of the application.
+     * Login function.
      *
      * @param {object} _ Previous
      * @param {object} args Arguments
      * @param {object} args.username The username
-     * @param {object} args.password The password.
-     * @returns {object} return
+     * @param {object} args.password The password
+     * @returns {object} User object.
      */
     async login (_, { username, password }) {
       try {
@@ -47,9 +45,6 @@ const resolvers = {
 
         // Create the access and refresh token.
         const { accessToken, refreshToken } = _signTokenPairs(user)
-
-        console.log(user)
-        console.log(accessToken)
 
         return {
           id: user._id,
@@ -61,13 +56,11 @@ const resolvers = {
         }
       } catch (error) {
         // Authentication failed.
-        console.error(error)
         throw new AuthenticationError(error)
       }
     },
-
     /**
-     * The main function of the application.
+     * Register function.
      *
      * @param {object} _ Previous
      * @param {object} args Arguments
@@ -76,7 +69,7 @@ const resolvers = {
      * @param {object} args.registerInput.email The e-mail address
      * @param {object} args.registerInput.password The password
      * @param {object} args.registerInput.confirmPassword Confirm password
-     * @returns {object} return
+     * @returns {object} User object
      */
     async register (
       _,
@@ -95,10 +88,7 @@ const resolvers = {
           password
         })
 
-        console.log(res._doc)
-
         const { accessToken, refreshToken } = _signTokenPairs(res)
-        // console.log(token)
 
         return {
           ...res._doc,
@@ -124,6 +114,28 @@ const resolvers = {
         }
 
         throw new UserInputError(error, { validationMessages })
+      }
+    },
+    /**
+     * Delete user account.
+     *
+     * @param {object} _ parent.
+     * @param {object} args arguments.
+     * @param {object} context context.
+     * @returns {object} The object.
+     */
+    deleteUser: async (_, args, context) => {
+      try {
+        const user = await User.findOne({ _id: args.id })
+
+        user.remove()
+
+        return {
+          success: true,
+          message: 'User deleted'
+        }
+      } catch (err) {
+        throw new Error(err)
       }
     }
   }

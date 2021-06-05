@@ -12,7 +12,6 @@ import { AuthenticationError } from 'apollo-server-express'
 
 const { isEmail } = validator
 
-// Create a schema.
 const schema = new mongoose.Schema({
   email: {
     type: String,
@@ -52,7 +51,7 @@ const schema = new mongoose.Schema({
     transform: function (doc, ret) {
       delete ret._id
     },
-    virtuals: true // ensure virtual fields are serialized
+    virtuals: true
   }
 })
 
@@ -60,7 +59,6 @@ schema.virtual('id').get(function () {
   return this._id.toHexString()
 })
 
-// Salts and hashes password before save.
 schema.pre('save', async function () {
   this.password = await bcrypt.hash(this.password, 10)
 })
@@ -68,19 +66,17 @@ schema.pre('save', async function () {
 /**
  * Authenticates a user.
  *
- * @param {string} username - ...
- * @param {string} password - ...
- * @returns {Promise<User>} ...
+ * @param {string} username - Username
+ * @param {string} password - Password
+ * @returns {Promise<User>} User object
  */
 schema.statics.authenticate = async function (username, password) {
   const user = await this.findOne({ username })
 
-  // If no user found or password is wrong, throw an error.
   if (!user || !(await bcrypt.compare(password, user.password))) {
     throw new AuthenticationError('Invalid username or password.')
   }
 
-  // User found and password correct, return the user.
   return user
 }
 
@@ -107,5 +103,4 @@ schema.statics.insert = async function (userData) {
   return user.save()
 }
 
-// Create a model using the schema.
 export const User = mongoose.model('User', schema)

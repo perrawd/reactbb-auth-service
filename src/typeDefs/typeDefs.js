@@ -7,14 +7,20 @@
 
 import { gql } from 'apollo-server-express'
 
-// Construct a schema, using GraphQL schema language
 const typeDefs = gql`
     extend type Query {
         getUsers: [User]
     }
+
+     type UpdateResponse {
+         success: Boolean!
+         message: String!
+     }
+
      type Mutation {
          register(registerInput: RegisterInput): User
          login(username: String!, password: String!): User!
+         deleteUser(id: ID!): UpdateResponse
      }
  
      input RegisterInput {

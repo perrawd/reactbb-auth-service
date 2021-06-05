@@ -22,7 +22,7 @@ import resolvers from './resolvers/users.js'
  */
 const main = async () => {
   await connectDB()
-  // Start GraphQL Apollo server
+  // Initate and start GraphQL Apollo server
   const server = new ApolloServer({
     schema: buildFederatedSchema([{ typeDefs, resolvers }]),
     playground: true,
